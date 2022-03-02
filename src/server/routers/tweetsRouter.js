@@ -1,8 +1,9 @@
 const express = require("express");
+const { getTweets } = require("../controllers/tweetsController");
 
 const router = express.Router();
 
-router.get("/");
+router.get("/", getTweets);
 router.post("/");
 router.put("/:id");
 router.delete("/:id");
