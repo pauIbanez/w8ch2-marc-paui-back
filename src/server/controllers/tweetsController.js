@@ -1,14 +1,15 @@
 const Tweet = require("../../database/models/Tweet");
 
-
 const getTweets = async (req, res, next) => {
-  try {
-    const tweets = await Tweet.find();
-    res.json({ tweets });
-  } catch (error) {
+  const tweets = await Tweet.find();
+  if (!tweets) {
+    const error = new Error("No tweets found");
     error.code = 404;
-    error.message = "No tweets found";
+    next(error);
+    return;
   }
+
+  res.json({ tweets });
 };
 
 const deleteTweet = async (req, res, next) => {
@@ -23,6 +24,4 @@ const deleteTweet = async (req, res, next) => {
   }
 };
 
-
 module.exports = { deleteTweet, getTweets };
-
