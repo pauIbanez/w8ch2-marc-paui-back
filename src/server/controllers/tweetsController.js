@@ -14,8 +14,6 @@ const getTweets = async (req, res, next) => {
 
 const deleteTweet = async (req, res, next) => {
   const { id } = req.params;
-
-
   const response = await Tweet.findByIdAndDelete(id);
   if (!response) {
     const error = new Error("Tweet not found");
@@ -26,6 +24,14 @@ const deleteTweet = async (req, res, next) => {
   res.json({});
 };
 
+const createTweet = async (req, res, next) => {
+  const tweet = req.body;
+  try {
+    await Tweet.create(tweet);
+    res.json(tweet).status(201);
+  } catch (error) {
+    next(error);
+  }
+};
 
-module.exports = { deleteTweet, getTweets };
-
+module.exports = { deleteTweet, getTweets, createTweet };
