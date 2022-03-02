@@ -1,5 +1,5 @@
 const Tweet = require("../../database/models/Tweet");
-const { getTweets, deleteTweet } = require("./tweetsController");
+const { getTweets, deleteTweet, createTweet } = require("./tweetsController");
 
 describe("Given getTweets controller", () => {
   describe("When it's passes a res and it finds tweets", () => {
@@ -27,7 +27,7 @@ describe("Given getTweets controller", () => {
     });
   });
 
-  describe("When it's passes a res and it does not find tweets", () => {
+  describe("When it receives a res and it does not find tweets", () => {
     test("Then it should call next with an error with message 'No tweets found' and code 404", async () => {
       const expectedError = expect.objectContaining({
         message: "No tweets found",
@@ -69,6 +69,35 @@ describe("Given a deleteTweet controller", () => {
 
       const next = jest.fn();
       await deleteTweet(req, null, next);
+
+      expect(next).toHaveBeenCalled();
+    });
+  });
+});
+
+describe("Given a createTweet controller", () => {
+  describe("When it receives a request with a valid body", () => {
+    test("Then it should invoke the json method and the status 201", async () => {
+      const req = { body: { text: "hello" } };
+
+      Tweet.create = jest.fn().mockResolvedValue(req.body);
+
+      const res = { json: jest.fn().mockReturnThis(), status: jest.fn() };
+
+      await createTweet(req, res);
+
+      expect(res.json).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(201);
+    });
+  });
+  describe("When it receives a request without a valid body", () => {
+    test("Then it should return an error", async () => {
+      const req = { body: { text: [1234] } };
+
+      Tweet.create = jest.fn().mockResolvedValue(req.body);
+      const next = jest.fn();
+
+      await createTweet(req, null, next);
 
       expect(next).toHaveBeenCalled();
     });
