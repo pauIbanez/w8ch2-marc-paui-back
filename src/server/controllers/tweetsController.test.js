@@ -26,4 +26,21 @@ describe("Given getTweets controller", () => {
       expect(res.json).toHaveBeenCalledWith({ tweets });
     });
   });
+
+  describe("When it's passes a res and it does not find tweets", () => {
+    test("Then it should call next with an error with message 'No tweets found' and code 404", async () => {
+      const expectedError = expect.objectContaining({
+        message: "No tweets found",
+        code: 404,
+      });
+
+      const next = jest.fn();
+
+      Tweet.find = jest.fn().mockResolvedValue();
+
+      await getTweets(null, null, next);
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
 });
