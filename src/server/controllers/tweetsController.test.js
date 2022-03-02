@@ -36,16 +36,14 @@ describe("Given getTweets controller", () => {
 
       const next = jest.fn();
 
-      Tweet.find = jest.fn().mockResolvedValue();
+      Tweet.find = jest.fn().mockResolvedValue(null);
 
       await getTweets(null, null, next);
 
       expect(next).toHaveBeenCalledWith(expectedError);
-
     });
   });
 });
-
 
 describe("Given a deleteTweet controller", () => {
   describe("When it receives a request with a valid id", () => {
