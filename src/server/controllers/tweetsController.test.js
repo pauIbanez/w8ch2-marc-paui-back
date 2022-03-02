@@ -21,7 +21,7 @@ describe("Given a deleteTweet controller", () => {
       const tweet = { date: "", text: "hello", likes: 2, id: 3 };
       const req = { params: { id: tweet.id } };
 
-      Tweet.findByIdAndDelete = jest.fn().mockRejectedValue({});
+      Tweet.findByIdAndDelete = jest.fn().mockResolvedValue(null);
 
       const next = jest.fn();
       await deleteTweet(req, null, next);

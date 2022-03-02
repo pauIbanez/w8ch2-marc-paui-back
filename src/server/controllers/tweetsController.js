@@ -2,13 +2,14 @@ const Tweet = require("../../database/models/Tweet");
 
 const deleteTweet = async (req, res, next) => {
   const { id } = req.params;
-  try {
-    await Tweet.findByIdAndDelete(id);
-    res.json({});
-  } catch (error) {
-    error.message = "Error trying to delete the tweet";
-    next(error);
-  }
-};
 
+  const response = await Tweet.findByIdAndDelete(id);
+  if (!response) {
+    const error = new Error("Tweet not found");
+    error.code = 404;
+    next(error);
+    return;
+  }
+  res.json({});
+};
 module.exports = { deleteTweet };
