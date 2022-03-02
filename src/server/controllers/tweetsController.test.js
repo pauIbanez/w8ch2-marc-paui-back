@@ -1,5 +1,5 @@
 const Tweet = require("../../database/models/Tweet");
-const { getTweets } = require("./tweetsController");
+const { getTweets, deleteTweet } = require("./tweetsController");
 
 describe("Given getTweets controller", () => {
   describe("When it's passes a res and it finds tweets", () => {
@@ -41,6 +41,38 @@ describe("Given getTweets controller", () => {
       await getTweets(null, null, next);
 
       expect(next).toHaveBeenCalledWith(expectedError);
+
+    });
+  });
+});
+
+
+describe("Given a deleteTweet controller", () => {
+  describe("When it receives a request with a valid id", () => {
+    test("Then it should return an empty object", async () => {
+      const tweet = { date: "", text: "hello", likes: 2, id: 3 };
+      const req = { params: { id: tweet.id } };
+
+      Tweet.findByIdAndDelete = jest.fn().mockResolvedValue({});
+
+      const res = { json: jest.fn() };
+
+      await deleteTweet(req, res);
+
+      expect(res.json).toHaveBeenCalled();
+    });
+  });
+  describe("When it receives a request without a valid id", () => {
+    test("Then it should return an error", async () => {
+      const tweet = { date: "", text: "hello", likes: 2, id: 3 };
+      const req = { params: { id: tweet.id } };
+
+      Tweet.findByIdAndDelete = jest.fn().mockRejectedValue({});
+
+      const next = jest.fn();
+      await deleteTweet(req, null, next);
+
+      expect(next).toHaveBeenCalled();
     });
   });
 });
