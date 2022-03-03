@@ -12,4 +12,14 @@ const getTuiteros = async (req, res, next) => {
   res.json({ tuiteros });
 };
 
-module.exports = { getTuiteros };
+const createTuitero = async (req, res, next) => {
+  const tuitero = req.body;
+  try {
+    await Tuitero.create(tuitero);
+    res.json(tuitero).status(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getTuiteros, createTuitero };
