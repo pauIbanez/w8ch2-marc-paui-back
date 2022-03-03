@@ -1,5 +1,5 @@
 const Tuitero = require("../../database/models/Tuitero");
-const { getTuiteros } = require("./tuiteroController");
+const { getTuiteros, createTuitero } = require("./tuiteroController");
 
 describe("Given getTuiteros controller", () => {
   describe("When it's passes a res and it finds tuiteros", () => {
@@ -40,6 +40,35 @@ describe("Given getTuiteros controller", () => {
       await getTuiteros(null, null, next);
 
       expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+});
+
+describe("Given a createTuiteros controller", () => {
+  describe("When it receives a req with the valid body", () => {
+    test("Then it should respond with the body and a status 201", async () => {
+      const req = { body: { name: "hello", username: "hello1" } };
+
+      Tuitero.create = jest.fn().mockResolvedValue(req.body);
+
+      const res = { json: jest.fn().mockReturnThis(), status: jest.fn() };
+
+      await createTuitero(req, res);
+
+      expect(res.json).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(201);
+    });
+  });
+  describe("When it receives a request without a valid body", () => {
+    test("Then it should return an error", async () => {
+      const req = { body: { text: [1234] } };
+
+      Tuitero.create = jest.fn().mockResolvedValue(req.body);
+      const next = jest.fn();
+
+      await createTuitero(req, null, next);
+
+      expect(next).toHaveBeenCalled();
     });
   });
 });
